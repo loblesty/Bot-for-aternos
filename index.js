@@ -1,78 +1,95 @@
 const mineflayer = require('mineflayer');
-require('dotenv').config();
 
-const HOST = process.env.HOST || 'OrgCoop.aternos.me';
-const PORT = Number(process.env.PORT) || 24497;
-const USERNAME = process.env.USERNAME || 'Bot_on_AFK';
-const PASSWORD = process.env.PASSWORD || '';
+const HOST = 'Example.aternos.me';
+const PORT = 24497;
+const USERNAME = 'Bot_on_AFK';
+
+const PASSWORD = 'YOUR_PASSWORD';
 
 let bot;
 let reconnecting = false;
 
-function createBot() {
+function startBot() {
+    console.log('🔄 Спроба підключення...');
+
     bot = mineflayer.createBot({
         host: HOST,
         port: PORT,
         username: USERNAME,
-        auth: 'offline'
+        version: '1.16.5'
+    });
+
+    bot.on('login', () => {
+        console.log('✅ Підключився до сервера');
     });
 
     bot.once('spawn', () => {
-        console.log('✅ Бот зайшов на сервер!');
+        console.log('✅ Зайшов у світ');
 
-        if (PASSWORD) {
-            bot.chat(`/login ${PASSWORD}`);
-        }
+        bot.setControlState('forward', true);
 
-        startCircle();
+        let angle = 0;
+
+        setInterval(() => {
+            if (!bot || !bot.entity) return;
+
+            angle += Math.PI / 18;
+
+            if (angle >= Math.PI * 2) {
+                angle -= Math.PI * 2;
+            }
+
+            bot.look(angle, 0, true);
+        }, 100);
     });
 
-    bot.on('end', () => {
-        console.log('❌ Бот відключився.');
+    bot.on('messagestr', (msg) => {
+        console.log('[CHAT]', msg);
 
-        if (!reconnecting) {
-            reconnecting = true;
+        const text = msg.toLowerCase();
 
+        if (text.includes('/register')) {
             setTimeout(() => {
-                reconnecting = false;
-                console.log('🔄 Перепідключення...');
-                createBot();
-            }, 5000);
+                if (bot && bot.player) {
+                    bot.chat(`/register ${PASSWORD} ${PASSWORD}`);
+                }
+            }, 1000);
         }
-    });
 
-    bot.on('error', (err) => {
-        console.log('⚠️ Помилка:', err.message);
+        if (text.includes('/login')) {
+            setTimeout(() => {
+                if (bot && bot.player) {
+                    bot.chat(`/login ${PASSWORD}`);
+                }
+            }, 1000);
+        }
     });
 
     bot.on('kicked', (reason) => {
-        console.log('👢 Бота викинуло:', reason);
+        console.log('❌ Kicked:', reason);
+    });
+
+    bot.on('error', (err) => {
+        console.log('⚠️ Error:', err.message);
+    });
+
+    bot.on('end', () => {
+        console.log('🔌 З\'єднання закрито');
+        reconnect();
     });
 }
 
-function startCircle() {
-    let angle = 0;
+function reconnect() {
+    if (reconnecting) return;
 
-    const radius = 3;
-    const centerX = bot.entity.position.x;
-    const centerZ = bot.entity.position.z;
+    reconnecting = true;
 
-    setInterval(() => {
-        if (!bot.entity) return;
+    console.log('⏳ Повторна спроба через 10 секунд...');
 
-        angle += 0.15;
-
-        const targetX = centerX + Math.cos(angle) * radius;
-        const targetZ = centerZ + Math.sin(angle) * radius;
-
-        const dx = targetX - bot.entity.position.x;
-        const dz = targetZ - bot.entity.position.z;
-
-        const yaw = Math.atan2(-dx, -dz);
-
-        bot.look(yaw, 0, true);
-        bot.setControlState('forward', true);
-    }, 100);
+    setTimeout(() => {
+        reconnecting = false;
+        startBot();
+    }, 10000);
 }
 
-createBot();
+startBot();
