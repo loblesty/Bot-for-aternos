@@ -1,7 +1,7 @@
 const mineflayer = require('mineflayer');
 
-const HOST = 'Example.aternos.me';
-const PORT = 24497;
+const HOST = 'Exapmle.aternos.me';
+const PORT = 00000;
 const USERNAME = 'Bot_on_AFK';
 
 const PASSWORD = 'YOUR_PASSWORD';
