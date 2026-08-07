@@ -1,0 +1,21 @@
+{
+  "name": "minecraft-circle-bot",
+  "version": "1.0.0",
+  "description": "Minecraft Mineflayer bot that runs in circles",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "minecraft",
+    "mineflayer",
+    "bot",
+    "afk"
+  ],
+  "author": "L0g1cForge",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "mineflayer": "^4.31.0"
+  }
+}
