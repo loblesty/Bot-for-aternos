@@ -1,4 +1,5 @@
-# Bot-for-aternos
+# Bot-for-aternos 🤖
+
 A simple Minecraft AFK bot made with **Node.js** and **Mineflayer**.
 
 The bot connects to a Minecraft server, automatically handles `/register` and `/login`, walks in circles and reconnects after disconnecting.
@@ -105,7 +106,14 @@ This makes the bot walk around in a circle.
 
 - JavaScript
 - Node.js
+- Mineflayer
 - Minecraft 1.16.5
+
+## ⚠️ Disclaimer
+
+This bot is intended for use on your own Minecraft server or on servers where bot usage is allowed.
+
+Do not use the bot to bypass server rules or restrictions.
 
 ## 📜 License
 
